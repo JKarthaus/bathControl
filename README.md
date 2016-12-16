@@ -1,0 +1,2 @@
+# bathControl
+BathControl HomeAutomation implementation
