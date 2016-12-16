@@ -1,0 +1,69 @@
+
+// -------------------------------------------------------------------------------------------
+//                                        INITIALISIERUNGEN
+tempWintergarten	= 12;
+tempBadezimmer 		= 12;
+feuchteBad			= 95;
+
+zuluft			= "OFF";
+abluft			= "OFF";
+
+// -------------------------------------------------------------------------------------------
+boolean RULE_TEMP (tempA,tempB){
+	boolean       result = false;
+	int minimaleTempDiff = 5;
+	if (tempA + minimaleTempDiff > tempB){
+		result = true;
+	}
+	if (tempA < 22){
+		result = false;
+		print ("Minimaltemperatur unterschritten ");
+	}
+	if (tempB > 26){
+		result = false;
+		print ("Maximaltemperatur ueberschritten ");
+	}
+	return result;
+}
+// -------------------------------------------------------------------------------------------
+boolean RULE_TIME (){
+	GregorianCalendar cal = new GregorianCalendar();
+	boolean result = false;
+	int minHour = 7;
+	int maxHour = 23;
+	if (cal.get(GregorianCalendar.HOUR_OF_DAY) > minHour
+	 && cal.get(GregorianCalendar.HOUR_OF_DAY) < maxHour ){
+		return true;
+	} else {
+		print ("Ausserhalb gueltigen Zeitbereiches von " + minHour + " bis " + maxHour);
+	}
+	return result;
+}
+// -------------------------------------------------------------------------------------------
+boolean RULE_MOISTURE (feuchte) {
+	int feuchteDurchDuschen = 90;
+	boolean result = false;
+	if (feuchte >= feuchteDurchDuschen){
+		result = true;
+	} else {
+		print ("Feuchte durch Duschen nicht erreicht.");
+	}
+	return result;
+}
+
+/**
+// ####################			TESTS   #################################
+print ("RULE_TEMP=" + RULE_TEMP(tempWintergarten,tempBadezimmer));
+print ("RULE_TIME=" + RULE_TIME());
+print ("RULE_MOISTURE=" + RULE_MOISTURE(feuchteBad));
+**/
+
+if (RULE_TEMP(tempWintergarten,tempBadezimmer) && RULE_TIME()){
+	zuluft = "ON";
+}
+if (RULE_MOISTURE(feuchteBad) && RULE_TIME()){
+	abluft = "ON";
+}
+
+print ("Ergebnis:Zuluft= " + zuluft);
+print ("Ergebnis:Abluft= " + abluft);
