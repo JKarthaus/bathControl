@@ -1,11 +1,15 @@
 package de.filiberry.bathcontrol.model;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class GuiDataModel {
 
+	private String statusZuluft;
+	private String statusAbluft;
 	private double tempBadezimmer;
 	private double tempWintergarten;
 	private double tempAussen;
-	private int feuchteBad;
+	private double feuchteBad;
 
 	public double getTempBadezimmer() {
 		return tempBadezimmer;
@@ -31,14 +35,6 @@ public class GuiDataModel {
 		this.tempAussen = tempAussen;
 	}
 
-	public int getFeuchteBad() {
-		return feuchteBad;
-	}
-
-	public void setFeuchteBad(int feuchteBad) {
-		this.feuchteBad = feuchteBad;
-	}
-
 	public String getStatusZuluft() {
 		return statusZuluft;
 	}
@@ -55,7 +51,16 @@ public class GuiDataModel {
 		this.statusAbluft = statusAbluft;
 	}
 
-	private String statusZuluft;
-	private String statusAbluft;
+	public int getHash() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	public double getFeuchteBad() {
+		return feuchteBad;
+	}
+
+	public void setFeuchteBad(double feuchteBad) {
+		this.feuchteBad = feuchteBad;
+	}
 
 }

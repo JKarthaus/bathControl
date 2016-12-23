@@ -3,11 +3,20 @@ package de.filiberry.bathcontrol.worker;
 import java.util.Date;
 
 import de.filiberry.bathcontrol.model.ActionModel;
+import de.filiberry.bathcontrol.model.BathControlContext;
+import de.filiberry.bathcontrol.model.GuiDataModel;
 
 public class Tools {
-	
-	
-	
+
+	public static GuiDataModel CastFrontentModel(BathControlContext bathControlContext) {
+		GuiDataModel result = new GuiDataModel();
+		result.setFeuchteBad(bathControlContext.getMoistureBadezimmer());
+		result.setStatusAbluft(bathControlContext.getStatusAbluft());
+		result.setStatusZuluft(bathControlContext.getStatusZuluft());
+		result.setTempBadezimmer(bathControlContext.getTempBadezimmer());
+		result.setTempWintergarten(bathControlContext.getTempWintergarten());
+		return result;
+	}
 
 	/**
 	 * 

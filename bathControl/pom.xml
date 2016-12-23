@@ -17,7 +17,7 @@
 
 	<groupId>de.filiberry</groupId>
 	<artifactId>bathControl</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0.SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<name>bathControl Bundle</name>
@@ -79,12 +79,36 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
+		</dependency>
 
 	</dependencies>
 
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -95,7 +119,7 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Bundle-Activator>de.filiberry.bathcontrol.Activator</Bundle-Activator>
-						<Embed-Dependency>org.eclipse.paho.client.mqttv3,bsh,commons-io</Embed-Dependency>
+						<Embed-Dependency>org.eclipse.paho.client.mqttv3,bsh,commons-io,commons-lang3,gson</Embed-Dependency>
 						<Export-Package>de.filiberry.bathcontrol*;version=${project.version}</Export-Package>
 						<Import-Package>!org.apache.bsf.*,!javax.servlet.*,!com.ibm.mqttdirect.modules.local.bindings,*</Import-Package>
 						<Include-Resource>{maven-resources}</Include-Resource>

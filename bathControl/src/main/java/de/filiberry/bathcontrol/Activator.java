@@ -40,11 +40,14 @@ import org.slf4j.LoggerFactory;
 
 import de.filiberry.bathcontrol.model.BathControlContext;
 import de.filiberry.bathcontrol.worker.BathControlWorker;
+import de.filiberry.bathcontrol.worker.GuiConnector;
+import de.filiberry.bathcontrol.worker.Tools;
 
 public class Activator implements BundleActivator, ManagedService, MqttCallback {
 
 	private static final String BUNDLE_ID = "bathControl";
 	private BathControlWorker bathControlWorker = new BathControlWorker();
+	
 	private volatile BathControlContext bathControlContext;
 	private MqttClient mqttClient = null;
 	@SuppressWarnings({ "rawtypes", "unused" })
@@ -146,7 +149,7 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		}
-
+		
 	}
 
 	/**

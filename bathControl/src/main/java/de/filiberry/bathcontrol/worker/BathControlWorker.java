@@ -21,9 +21,12 @@ public class BathControlWorker implements Runnable {
 	public static final int mqttQOS = 2;
 	private boolean stop = false;
 	private volatile BathControlContext bathControlContext;
+	private GuiConnector guiConnector = new GuiConnector();
 	private Interpreter bshInterpreter = new Interpreter();
 	private MemoryPersistence persistence = new MemoryPersistence();
 	private String mqttGPIOActorHost;
+	private String mqttGuiHost;
+	private String mqttGuiTopic;
 	private String mqttGPIOActorZuluftTopic;
 	private String mqttGPIOActorAbluftTopic;
 	private String ruleScriptFile;
@@ -60,6 +63,7 @@ public class BathControlWorker implements Runnable {
 				} else {
 					LOGGER.error("Rules File:" + getRuleScriptFile() + " not found !");
 				}
+				guiConnector.updateFrontend(Tools.CastFrontentModel(bathControlContext));
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage());
 			}
@@ -186,6 +190,24 @@ public class BathControlWorker implements Runnable {
 
 	public void setRuleScriptFile(String ruleScriptFile) {
 		this.ruleScriptFile = ruleScriptFile;
+	}
+
+	public String getMqttGuiHost() {
+		return mqttGuiHost;
+	}
+
+	public void setMqttGuiHost(String mqttGuiHost) {
+		this.mqttGuiHost = mqttGuiHost;
+		guiConnector.setMqttFrontendHost(mqttGuiHost);
+	}
+
+	public String getMqttGuiTopic() {
+		return mqttGuiTopic;
+	}
+
+	public void setMqttGuiTopic(String mqttGuiTopic) {
+		this.mqttGuiTopic = mqttGuiTopic;
+		guiConnector.setMqttFrontendTopic(mqttGuiTopic);
 	}
 
 }
