@@ -18,6 +18,17 @@ public class BathControlContext {
 	private String statusZuluft;
 	private String statusAbluft;
 
+	/**
+	 * 
+	 */
+	public BathControlContext() {
+		this.tempWintergarten = 0;
+		this.tempBadezimmer = 0;
+		this.moistureBadezimmer = 0;
+		this.statusAbluft = STATUS_OFF;
+		this.statusZuluft = STATUS_OFF;
+	}
+
 	public double getTempWintergarten() {
 		return tempWintergarten;
 	}

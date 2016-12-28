@@ -1,9 +1,12 @@
 
 // -------------------------------------------------------------------------------------------
 //                                        INITIALISIERUNGEN
+
+debug             = false;
+
 tempWintergarten	= 12;
 tempBadezimmer 		= 12;
-feuchteBad			= 95;
+feuchteBad			  = 95;
 
 zuluft			= "OFF";
 abluft			= "OFF";
@@ -17,11 +20,11 @@ boolean RULE_TEMP (tempA,tempB){
 	}
 	if (tempA < 22){
 		result = false;
-		print ("Minimaltemperatur unterschritten ");
+		if (debug) {print ("Minimaltemperatur unterschritten ");}
 	}
 	if (tempB > 26){
 		result = false;
-		print ("Maximaltemperatur ueberschritten ");
+		if (debug) {print ("Maximaltemperatur ueberschritten ");}
 	}
 	return result;
 }
@@ -35,7 +38,7 @@ boolean RULE_TIME (){
 	 && cal.get(GregorianCalendar.HOUR_OF_DAY) < maxHour ){
 		return true;
 	} else {
-		print ("Ausserhalb gueltigen Zeitbereiches von " + minHour + " bis " + maxHour);
+		if (debug) {print ("Ausserhalb gueltigen Zeitbereiches von " + minHour + " bis " + maxHour);}
 	}
 	return result;
 }
@@ -46,17 +49,17 @@ boolean RULE_MOISTURE (feuchte) {
 	if (feuchte >= feuchteDurchDuschen){
 		result = true;
 	} else {
-		print ("Feuchte durch Duschen nicht erreicht.");
+		if (debug) {print ("Feuchte durch Duschen nicht erreicht.");}
 	}
 	return result;
 }
 
-/**
 // ####################			TESTS   #################################
-print ("RULE_TEMP=" + RULE_TEMP(tempWintergarten,tempBadezimmer));
-print ("RULE_TIME=" + RULE_TIME());
-print ("RULE_MOISTURE=" + RULE_MOISTURE(feuchteBad));
-**/
+if (debug) {
+	print ("RULE_TEMP=" + RULE_TEMP(tempWintergarten,tempBadezimmer));
+	print ("RULE_TIME=" + RULE_TIME());
+	print ("RULE_MOISTURE=" + RULE_MOISTURE(feuchteBad));
+}
 
 if (RULE_TEMP(tempWintergarten,tempBadezimmer) && RULE_TIME()){
 	zuluft = "ON";
@@ -65,5 +68,7 @@ if (RULE_MOISTURE(feuchteBad) && RULE_TIME()){
 	abluft = "ON";
 }
 
-print ("Ergebnis:Zuluft= " + zuluft);
-print ("Ergebnis:Abluft= " + abluft);
+if (debug) {
+	print ("Ergebnis:Zuluft= " + zuluft);
+	print ("Ergebnis:Abluft= " + abluft);
+}

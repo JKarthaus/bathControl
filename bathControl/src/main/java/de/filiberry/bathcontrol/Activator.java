@@ -73,7 +73,7 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		Hashtable<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(Constants.SERVICE_PID, BUNDLE_ID);
 		serviceReg = context.registerService(ManagedService.class.getName(), this, properties);
-		new Thread(bathControlWorker).start();
+		
 	}
 
 	/**
@@ -163,9 +163,15 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		mqttTopicTempBadezimmer = (String) properties.get("mqtt.topic.temp.badezimmer");
 		mqttTopicTempWintergarten = (String) properties.get("mqtt.topic.temp.wintergarten");
 
+		// Set the Actor config to the Worker
+		bathControlWorker.setMqttGPIOActorHost((String) properties.get("mqtt.publish.actor.host"));
 		bathControlWorker.setMqttGPIOActorZuluftTopic((String) properties.get("mqtt.publish.actor.zuluft.topic"));
 		bathControlWorker.setMqttGPIOActorAbluftTopic((String) properties.get("mqtt.publish.actor.abluft.topic"));
-
+		
+		// Set the GUI config to the Worker
+		bathControlWorker.setMqttGuiHost((String) properties.get("mqtt.publish.gui.host"));
+		bathControlWorker.setMqttGuiTopic((String) properties.get("mqtt.publish.gui.topic"));
+		
 		String scriptFile = (String) properties.get("rules.scripting.file");
 		if (scriptFile == null) {
 			LOGGER.error("bathControl Script File not set -> create " + FileUtils.getUserDirectoryPath()
@@ -181,6 +187,7 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 			}
 		}
 		bathControlWorker.setRuleScriptFile(scriptFile);
+		new Thread(bathControlWorker).start();
 		connectToBroker();
 	}
 

@@ -36,17 +36,18 @@ public class BathControlWorker implements Runnable {
 	 * 
 	 */
 	public BathControlWorker() {
-		try {
-			mqttClient = new MqttClient(mqttGPIOActorHost, MQTT_CLIENT_ID, persistence);
-		} catch (MqttException e) {
-			LOGGER.error(e.getMessage());
-		}
 	}
 
 	/**
 	 * 
 	 */
 	public void run() {
+		try {
+			mqttClient = new MqttClient(mqttGPIOActorHost, MQTT_CLIENT_ID, persistence);
+		} catch (MqttException e) {
+			LOGGER.error(e.getMessage());
+		}
+
 		while (!stop) {
 			try {
 				Thread.sleep(1000);
