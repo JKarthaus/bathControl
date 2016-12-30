@@ -37,12 +37,13 @@ public class GuiConnector {
 				LOGGER.info("connected");
 				// --
 				mqttClient.publish(mqttFrontendTopic, gson.toJson(guiDataModel).getBytes(), mqttQOS, true);
+				LOGGER.info("Publish:" + gson.toJson(guiDataModel) + " on Topic " + mqttFrontendTopic);
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage());
 			} finally {
 				if (mqttClient != null && mqttClient.isConnected()) {
 					try {
-						LOGGER.info("Disconnected");
+						LOGGER.info("Broker Disconnected");
 						mqttClient.disconnect();
 					} catch (MqttException e) {
 						LOGGER.error(e.getMessage());

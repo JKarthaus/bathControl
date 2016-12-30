@@ -2,11 +2,11 @@
 // -------------------------------------------------------------------------------------------
 //                                        INITIALISIERUNGEN
 
-debug             = false;
+debug             = true;
 
-tempWintergarten	= 12;
-tempBadezimmer 		= 12;
-feuchteBad			  = 95;
+if (tempWintergarten==void) {tempWintergarten = 12.0;}
+if ( tempBadezimmer ==void) {tempBadezimmer   = 20.2;}
+if ( feuchteBad == void )   {feuchteBad       = 95;}
 
 zuluft			= "OFF";
 abluft			= "OFF";

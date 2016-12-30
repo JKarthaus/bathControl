@@ -60,7 +60,7 @@ public class BathControlWorker implements Runnable {
 					bshInterpreter.source(getRuleScriptFile());
 					// -- Check the Result
 					checkAction(((String) bshInterpreter.get("zuluft")).trim().toUpperCase(),
-							((String) bshInterpreter.get("abluft")).trim().toUpperCase());
+							    ((String) bshInterpreter.get("abluft")).trim().toUpperCase());
 				} else {
 					LOGGER.error("Rules File:" + getRuleScriptFile() + " not found !");
 				}
@@ -81,9 +81,11 @@ public class BathControlWorker implements Runnable {
 
 		if (Tools.isNotInTargetState(bathControlContext.getStatusZuluft(), zuluftSoll)) {
 			pushActions.add(new ActionModel(getMqttGPIOActorZuluftTopic(), zuluftSoll));
+			bathControlContext.setStatusZuluft(zuluftSoll);
 		}
 		if (Tools.isNotInTargetState(bathControlContext.getStatusAbluft(), abluftSoll)) {
 			pushActions.add(new ActionModel(getMqttGPIOActorAbluftTopic(), abluftSoll));
+			bathControlContext.setStatusAbluft(abluftSoll);
 		}
 
 		// Check Automatic Off
@@ -91,11 +93,13 @@ public class BathControlWorker implements Runnable {
 				&& Tools.isDateReached(bathControlContext.getZuluftOffTime())) {
 			pushActions.add(new ActionModel(getMqttGPIOActorZuluftTopic(), ActionModel.ACTION_OFF));
 			bathControlContext.setZuluftOffTime(null);
+			bathControlContext.setStatusZuluft(ActionModel.ACTION_OFF);
 		}
 		if (Tools.isON(bathControlContext.getStatusAbluft())
 				&& Tools.isDateReached(bathControlContext.getAbluftOffTime())) {
 			pushActions.add(new ActionModel(getMqttGPIOActorAbluftTopic(), ActionModel.ACTION_OFF));
 			bathControlContext.setAbluftOffTime(null);
+			bathControlContext.setStatusAbluft(ActionModel.ACTION_OFF);
 		}
 
 		// Send out..
