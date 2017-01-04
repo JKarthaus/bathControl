@@ -10,6 +10,7 @@ public class BathControlContext {
 
 	private double tempWintergarten;
 	private double tempBadezimmer;
+	private double tempAussen;
 	private double moistureBadezimmer;
 
 	private Date zuluftOffTime;
@@ -83,6 +84,14 @@ public class BathControlContext {
 
 	public void setAbluftOffTime(Date abluftOffTime) {
 		this.abluftOffTime = abluftOffTime;
+	}
+
+	public double getTempAussen() {
+		return tempAussen;
+	}
+
+	public void setTempAussen(double tempAussen) {
+		this.tempAussen = tempAussen;
 	}
 
 }

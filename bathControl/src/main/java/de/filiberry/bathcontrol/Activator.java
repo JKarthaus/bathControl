@@ -40,14 +40,12 @@ import org.slf4j.LoggerFactory;
 
 import de.filiberry.bathcontrol.model.BathControlContext;
 import de.filiberry.bathcontrol.worker.BathControlWorker;
-import de.filiberry.bathcontrol.worker.GuiConnector;
-import de.filiberry.bathcontrol.worker.Tools;
 
 public class Activator implements BundleActivator, ManagedService, MqttCallback {
 
 	private static final String BUNDLE_ID = "bathControl";
 	private BathControlWorker bathControlWorker = new BathControlWorker();
-	
+
 	private volatile BathControlContext bathControlContext;
 	private MqttClient mqttClient = null;
 	@SuppressWarnings({ "rawtypes", "unused" })
@@ -57,6 +55,7 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 	private String mqttTopic;
 	private String mqttTopicTempWintergarten;
 	private String mqttTopicTempBadezimmer;
+	private String mqttTopicTempAussen;
 	private String mqttTopicMoistureBadezimmer;
 	private BundleContext context;
 
@@ -73,7 +72,7 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		Hashtable<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(Constants.SERVICE_PID, BUNDLE_ID);
 		serviceReg = context.registerService(ManagedService.class.getName(), this, properties);
-		
+
 	}
 
 	/**
@@ -140,6 +139,11 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 				bathControlContext.setMoistureBadezimmer(new Double(messageData));
 				messageOK = true;
 			}
+			if (StringUtils.contains(topic, mqttTopicTempAussen)) {
+				bathControlContext.setTempAussen(new Double(messageData));
+				messageOK = true;
+			}
+
 			// --
 			if (messageOK) {
 				LOGGER.info("Message on Topic " + topic + " Value=" + messageData + " Arrived and set to Context");
@@ -149,7 +153,7 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		}
-		
+
 	}
 
 	/**
@@ -161,17 +165,18 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		mqttTopic = (String) properties.get("mqtt.listen.topic");
 		mqttTopicMoistureBadezimmer = (String) properties.get("mqtt.topic.moisture.badezimmer");
 		mqttTopicTempBadezimmer = (String) properties.get("mqtt.topic.temp.badezimmer");
+		mqttTopicTempAussen = (String) properties.get("mqtt.topic.temp.aussen");
 		mqttTopicTempWintergarten = (String) properties.get("mqtt.topic.temp.wintergarten");
 
 		// Set the Actor config to the Worker
 		bathControlWorker.setMqttGPIOActorHost((String) properties.get("mqtt.publish.actor.host"));
 		bathControlWorker.setMqttGPIOActorZuluftTopic((String) properties.get("mqtt.publish.actor.zuluft.topic"));
 		bathControlWorker.setMqttGPIOActorAbluftTopic((String) properties.get("mqtt.publish.actor.abluft.topic"));
-		
+
 		// Set the GUI config to the Worker
 		bathControlWorker.setMqttGuiHost((String) properties.get("mqtt.publish.gui.host"));
 		bathControlWorker.setMqttGuiTopic((String) properties.get("mqtt.publish.gui.topic"));
-		
+
 		String scriptFile = (String) properties.get("rules.scripting.file");
 		if (scriptFile == null) {
 			LOGGER.error("bathControl Script File not set -> create " + FileUtils.getUserDirectoryPath()

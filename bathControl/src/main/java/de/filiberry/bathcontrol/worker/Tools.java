@@ -15,6 +15,7 @@ public class Tools {
 		result.setStatusZuluft(bathControlContext.getStatusZuluft());
 		result.setTempBadezimmer(bathControlContext.getTempBadezimmer());
 		result.setTempWintergarten(bathControlContext.getTempWintergarten());
+		result.setTempAussen(bathControlContext.getTempAussen());
 		return result;
 	}
 
