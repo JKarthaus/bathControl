@@ -177,15 +177,10 @@ public class Activator implements BundleActivator, ManagedService, MqttCallback 
 		bathControlWorker.setMqttGuiHost((String) properties.get("mqtt.publish.gui.host"));
 		bathControlWorker.setMqttGuiTopic((String) properties.get("mqtt.publish.gui.topic"));
 
-		String scriptFile = (String) properties.get("rules.scripting.file");
-		if (scriptFile == null) {
-			LOGGER.error("bathControl Script File not set -> create " + FileUtils.getUserDirectoryPath()
-					+ "/bathControl.bsh");
-			scriptFile = FileUtils.getUserDirectoryPath() + "/bathControl.bsh";
-		}
+		String scriptFile = FileUtils.getUserDirectoryPath() + "/bathControl.js";
 		if (!BathControlWorker.checkConfigFile(scriptFile)) {
 			try {
-				IOUtils.copy(context.getBundle().getResource("/bathControl.bsh").openStream(),
+				IOUtils.copy(context.getBundle().getResource("/bathControl.js").openStream(),
 						new FileOutputStream(new File(scriptFile)));
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage());

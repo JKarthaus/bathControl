@@ -1,7 +1,12 @@
 package de.filiberry.bathcontrol.worker;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
+
+import javax.script.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -10,7 +15,6 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bsh.Interpreter;
 import de.filiberry.bathcontrol.model.ActionModel;
 import de.filiberry.bathcontrol.model.BathControlContext;
 
@@ -22,7 +26,9 @@ public class BathControlWorker implements Runnable {
 	private boolean stop = false;
 	private volatile BathControlContext bathControlContext;
 	private GuiConnector guiConnector = new GuiConnector();
-	private Interpreter bshInterpreter = new Interpreter();
+	//private Interpreter bshInterpreter = new Interpreter();
+	private ScriptEngineManager factory = new ScriptEngineManager();
+	private ScriptEngine scriptEngine;
 	private MemoryPersistence persistence = new MemoryPersistence();
 	private String mqttGPIOActorHost;
 	private String mqttGuiHost;
@@ -44,6 +50,7 @@ public class BathControlWorker implements Runnable {
 	public void run() {
 		try {
 			mqttClient = new MqttClient(mqttGPIOActorHost, MQTT_CLIENT_ID, persistence);
+			scriptEngine = factory.getEngineByName("nashorn");
 		} catch (MqttException e) {
 			LOGGER.error(e.getMessage());
 		}
@@ -52,15 +59,22 @@ public class BathControlWorker implements Runnable {
 			try {
 				Thread.sleep(1000);
 				if (checkConfigFile(getRuleScriptFile())) {
+					scriptEngine.eval(new FileReader("/home/bathcontrol/test.js"));
+
+					Invocable invocable = (Invocable) scriptEngine;
+
+					Object result = invocable.invokeFunction("checkZuluft");
+					
+					LOGGER.info((String) result);
 					// Set the Script Enviroment
-					bshInterpreter.set("tempWintergarten", bathControlContext.getTempWintergarten());
-					bshInterpreter.set("tempBadezimmer", bathControlContext.getTempBadezimmer());
-					bshInterpreter.set("feuchteBad", bathControlContext.getMoistureBadezimmer());
+					//bshInterpreter.set("tempWintergarten", bathControlContext.getTempWintergarten());
+					//bshInterpreter.set("tempBadezimmer", bathControlContext.getTempBadezimmer());
+					//bshInterpreter.set("feuchteBad", bathControlContext.getMoistureBadezimmer());
 					// -- Run the Script
-					bshInterpreter.source(getRuleScriptFile());
+					//bshInterpreter.source(getRuleScriptFile());
 					// -- Check the Result
-					checkAction(((String) bshInterpreter.get("zuluft")).trim().toUpperCase(),
-							    ((String) bshInterpreter.get("abluft")).trim().toUpperCase());
+					//checkAction(((String) bshInterpreter.get("zuluft")).trim().toUpperCase(),
+					//		    ((String) bshInterpreter.get("abluft")).trim().toUpperCase());
 				} else {
 					LOGGER.error("Rules File:" + getRuleScriptFile() + " not found !");
 				}
